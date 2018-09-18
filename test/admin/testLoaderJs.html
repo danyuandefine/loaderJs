@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<script src="../../config.js"></script>
+<script src="../../utils.js"></script>
+<script src="../../consts.js"></script>
+<script src="../../log.js"></script>
+<script src="../../events.js"></script>
+<script src="../../loader.js"></script>
+<script src="../../module.js"></script>
+<script src="../../define.js"></script>
+<script src="../../require.js"></script>
+
+<script>
+    loaderJs.config({
+        asynLoad:false,//是否异步加载脚本
+        baseDir:"moduleLoader/test",//站点根路径
+        debug:true,
+        logLevel:LOG_LEVELS.DEBUG,
+        modules:[//约定为文件名和模块名一致,后缀.js可以省略
+            "admin/login.js",
+            "admin/a.js",
+            "user.js",
+        ],
+        moduleBundles:[//打包后的模块集合压缩脚本文件
+                {
+                    deps:["a","b"],//包含的模块声明
+                    url:"test.bundle.js"
+                }
+        ],
+        resolves:{//给模块起别名
+            "user1":"aa/bb/user.js"
+        }
+    }).config(function($user){//为模块设置初始化参数
+        $user.setNickName("小明");
+    });
+    loaderJs.require(function($log,$login){
+        $log.debug('require modules success !');
+        $login.login();
+        loaderJs.require(["$user"],function($user){
+            $user.logout();
+        });
+    }).require(["$log","$a"],function($log,$a){
+        $log.debug("welcome to loaderJs.");
+    });
+</script>
+
+</body>
+</html>

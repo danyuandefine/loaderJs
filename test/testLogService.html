@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script src="../loaderJs.min.js"></script>
+<script>
+    loaderJs.config({
+        baseDir:"",//站点根路径
+        debug:true,//是否打印trace日志,loaderJs框架模块加载日志都是以trace方式打印的
+        logLevel:LOG_LEVELS.DEBUG//日志打印级别,DEBUG,INFO, WARN,ERROR共四个级别
+    });
+    loaderJs.require(["$log"],function($log){
+        var name='loaderJs';
+        //可以传参替换占位符
+        $log.trace("hello {0} , {1} .",name,"pretty good");
+        $log.debug("hello {0} .",name);
+        $log.info("hello {0} .",name);
+        $log.warn("hello LoaderJs .");
+        $log.error("hello LoaderJs .");
+    });
+</script>
+
+</body>
+</html>

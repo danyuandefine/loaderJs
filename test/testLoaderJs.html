@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div style="display: flex;min-height:100vh;align-items: center;justify-content: center;">
+        <div>
+            <p>
+                <h1>Wellcome to loaderJs !</h1><br>
+                <h5>Please open the console to see the results of the sample run.</h5>
+            </p>
+        </div>
+
+</div>
+
+
+<script src="../loaderJs.min.js"></script>
+<script>
+    loaderJs.config({
+        baseDir:"loaderJs/test",//站点根路径
+        debug:true,
+       // logLevel:LOG_LEVELS.DEBUG,//默认就是debug
+        preload:{//预加载配置信息
+            //syncLoad:false,//是否串行加载，默认异步，效率高,只对非标准模块脚本生效
+            modules:[//需要预加载的模块名列表,自动解析模块之前依赖关系，按其依赖关系顺序引入相关模块
+                "$user","$"
+            ],
+            urls:[//其他非标准文件加载，不能省略后缀名
+                //非标准模块css脚本的预加载
+
+                //非标准模块js脚本的预加载
+
+                //非标准模块图片、字体等其他资源的预加载
+
+            ]
+        },
+        modules:[//约定为文件名和模块名一致,后缀.js可以省略
+            "admin/login",
+            "user.js",
+            "regist/regist.js"
+        ],
+        moduleBundles:[//打包后的模块集合压缩脚本文件
+                {
+                    includes:["a","b"],//包含的模块声明
+                    url:"test.bundle.js"
+                }
+        ],
+        resolves:{
+            "useraa":{//给模块起别名
+                url:"user1.js"
+            },
+            "":{//加载非标准模块
+                url:"../jquery.min.js",
+                exports:"jQuery"
+            }
+        }
+    }).config(function($user){//为模块设置初始化参数
+        $user.setNickName("小明");
+    }).config(function($regist){//为模块设置初始化参数
+        $regist.setAccount("15822911932");
+    }).success(["$user"],function($user){//初始化成功回调
+        $user.login("preload 小明 ");
+    }).success(["$user","$useraa"],function($user){//初始化成功回调
+        $user.login("preload 小明2 ");
+    });
+    loaderJs.require(["$useraa","$","$loader","$log"],function($user,$,$loader,$log){
+        $log.debug('require $useraa success !');
+        $.get("login.json",function(data){
+            $user.login(data.name);
+        });
+
+    }).require(function($log,$login){
+        $log.debug('require modules success !');
+        $log.debug("object:",{name:"aaa"});
+        $login.login();
+        loaderJs.require(["$useraa"],function($user){
+            $user.logout("小王");
+        });
+    }).require(["$regist","$log","$utils"],function($regist,$log,$utils){
+        $regist.regist();
+        $log.debug("current time [{0}].",$utils.parseTimestampSecond());
+    });
+</script>
+
+</body>
+</html>
